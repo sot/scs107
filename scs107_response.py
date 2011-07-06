@@ -33,12 +33,12 @@ cd cmd_states
 chgrp aspect nonload_cmds_archive.py
 chmod g+w nonload_cmds_archive.py
 
+# Set the SCS107 time (from telecon email report) as a variable
+# example: setenv scs107time '2011:158:15:23:10.000'
+setenv scs107time '<SCS107 time>'
+
 # change to aca user
 su aca
-
-# Set the SCS107 time (from telecon email report) as a variable
-# example: set scs107time='2011:158:15:23:10.000'
-set scs107time='<SCS107 time>'
 
 # Run add_nonload_cmds.py
 # (after SOSA transition, add --observing-only flag to this)
@@ -54,7 +54,7 @@ set scs107time='<SCS107 time>'
 
 # Commit the changes to nonload_cmds_archive.py
 hg commit nonload_cmds_archive.py \\
-   -m "updated nonload cmds for scs107 before %(comm_time)s" \\
+   -m "Updated nonload cmds for SCS107 at ${scs107time}" 
 hg push 
 
 -----
