@@ -68,14 +68,6 @@ Documentation for add_nonload_cmds.py at:
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-# emails...
-smtp_handler = logging.handlers.SMTPHandler('localhost',
-                                            'aca@head.cfa.harvard.edu',
-                                            'aca@head.cfa.harvard.edu',
-                                            'scs107 reminder')
-
-smtp_handler.setLevel(logging.INFO)
-log.addHandler(smtp_handler)
 
 disarm_file = os.path.join(os.environ['SKA_DATA'], 'scs107', 'disarm')
 arc_hist_file = os.path.join(os.environ['SKA_DATA'], 'arc', 'SCS107_history')
@@ -88,11 +80,21 @@ if not line_match:
     raise ValueError("Unexpected string '%s' found in %s" % (state, arc_hist_file))
 if line_match.group(2) == 'SCS107 detected':
     if not os.path.exists(disarm_file):
-        cmds = scs107_cmds(line_match.group(1), disarm_file)
+        comm_time = line_match.group(1)
+        cmds = scs107_cmds(comm_time, disarm_file)
+        # emails...
+        smtp_handler = logging.handlers.SMTPHandler('localhost',
+                                                    'aca@head.cfa.harvard.edu',
+                                                    'aca@head.cfa.harvard.edu',
+                                                    'SCS107 cmd_states reminder (alert from %s)' % comm_time)
+        
+        smtp_handler.setLevel(logging.INFO)
+        log.addHandler(smtp_handler)
         log.info(cmds)
+        log.removeHandler(smtp_handler)
 if line_match.group(2) == 'Loads running':
     if os.path.exists(disarm_file):
         os.unlink(disarm_file)
 
-log.removeHandler(smtp_handler)
+
     
