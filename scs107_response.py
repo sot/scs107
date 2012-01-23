@@ -40,13 +40,14 @@ setenv scs107time '<SCS107 time>'
 # change to aca user
 su aca
 
-# Run add_nonload_cmds.py
-# (after SOSA transition, add --observing-only flag to this)
+# Run add_nonload_cmds.py.  If only observing loads should be interrupted,
+# use --observing-only flag as demonstrated below.
 
 /proj/sot/ska/bin/python ./add_nonload_cmds.py --dbi sybase --server sybase \\
                               --user aca_ops --database aca \\
                               --date ${scs107time} \\
                               --cmd-set scs107 --interrupt \\
+                              --observing-only \\
                               --archive-file nonload_cmds_archive.py
 
 # stop working as aca
