@@ -23,10 +23,11 @@ chgrp aspect %(disarm)s
 chmod g+w %(disarm)s
 ls -l %(disarm)s
 
-# clone the cmd_states project
+# clone the cmd_states project from either github or clone in ~/git
+# (if cloning from ~/git, make sure you're working from an updated clone)
 mkdir /pool1/scs107
 cd /pool1/scs107
-hg clone /proj/sot/ska/hg/cmd_states
+git clone git@github.com:sot/cmd_states.git
 cd cmd_states
 
 # confirm that the nonload_cmds_archive.py is aspect writeable
@@ -35,6 +36,7 @@ chmod g+w nonload_cmds_archive.py
 
 # Set the SCS107 time (from telecon email report) as a variable
 # example: setenv scs107time '2011:158:15:23:10.000'
+# (use of 'setenv' below expects tcsh)
 setenv scs107time '<SCS107 time>'
 
 # change to aca user
@@ -54,9 +56,9 @@ su aca
 <CTRL>-d
 
 # Commit the changes to nonload_cmds_archive.py
-hg commit nonload_cmds_archive.py \\
+git commit nonload_cmds_archive.py \\
    -m "Updated nonload cmds for SCS107 at ${scs107time}" 
-hg push 
+git push origin
 
 -----
 End Procedure
