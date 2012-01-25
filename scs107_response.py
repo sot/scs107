@@ -5,6 +5,7 @@ import re
 import logging
 from logging.handlers import SMTPHandler
 
+
 def scs107_cmds(comm_time, disarm_file):
     return """
 An SCS107 has been detected at or before %(comm_time)s
@@ -57,40 +58,38 @@ su aca
 
 # Commit the changes to nonload_cmds_archive.py
 git commit nonload_cmds_archive.py \\
-   -m "Updated nonload cmds for SCS107 at ${scs107time}" 
+   -m "Updated nonload cmds for SCS107 at ${scs107time}"
 git push origin
-
 -----
 End Procedure
 
 Documentation for add_nonload_cmds.py at:
 ( http://cxc.harvard.edu/mta/ASPECT/tool_doc/cmd_states/add_nonload_cmds.html )
-""" % { 'comm_time' : comm_time, 'disarm': disarm_file } 
-
-
+""" % {'comm_time': comm_time, 'disarm': disarm_file}
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 
 disarm_file = os.path.join(os.environ['SKA_DATA'], 'scs107', 'disarm')
 arc_hist_file = os.path.join(os.environ['SKA_DATA'], 'arc', 'SCS107_history')
-
-      
 arc_history = open(arc_hist_file).readlines()
 state = arc_history[-1].rstrip()
-line_match = re.match('(\d{4}:\d{3}:\d{2}:\d{2}:\d{2})\s::\s(Loads\srunning|SCS107\sdetected)', state)
+line_match = re.match(
+    '(\d{4}:\d{3}:\d{2}:\d{2}:\d{2})\s::\s(Loads\srunning|SCS107\sdetected)',
+    state)
 if not line_match:
-    raise ValueError("Unexpected string '%s' found in %s" % (state, arc_hist_file))
+    raise ValueError(
+        "Unexpected string '%s' found in %s" % (state, arc_hist_file))
 if line_match.group(2) == 'SCS107 detected':
     if not os.path.exists(disarm_file):
         comm_time = line_match.group(1)
         cmds = scs107_cmds(comm_time, disarm_file)
         # emails...
-        smtp_handler = logging.handlers.SMTPHandler('localhost',
-                                                    'aca@head.cfa.harvard.edu',
-                                                    'aca@head.cfa.harvard.edu',
-                                                    'SCS107 cmd_states reminder (alert from %s)' % comm_time)
-        
+        smtp_handler = SMTPHandler('localhost',
+                                   'aca@head.cfa.harvard.edu',
+                                   'aca@head.cfa.harvard.edu',
+                                   'SCS107 cmd_states reminder (alert from %s)'
+                                   % comm_time)
         smtp_handler.setLevel(logging.INFO)
         log.addHandler(smtp_handler)
         log.info(cmds)
@@ -98,6 +97,3 @@ if line_match.group(2) == 'SCS107 detected':
 if line_match.group(2) == 'Loads running':
     if os.path.exists(disarm_file):
         os.unlink(disarm_file)
-
-
-    
