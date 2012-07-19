@@ -24,6 +24,18 @@ chgrp aspect %(disarm)s
 chmod g+w %(disarm)s
 ls -l %(disarm)s
 
+# Check for heart attack on timelines cron task
+# if it exists, don't proceed with this process until that
+# is understood
+ls -l /proj/sot/ska/data/timelines/task_sched_heart_attack
+
+# Stop timelines cron task
+touch /proj/sot/ska/data/timelines/task_sched_heart_attack
+
+# Backup the flight databases
+cd /proj/sot/ska/data/sybase_backup
+./dump_cmd_tables.sh
+
 # clone the cmd_states project from either github or clone in ~/git
 # (if cloning from ~/git, make sure you're working from an updated clone)
 mkdir /pool1/scs107
@@ -58,8 +70,15 @@ su aca
 
 # Commit the changes to nonload_cmds_archive.py
 git commit nonload_cmds_archive.py \\
-   -m "Updated nonload cmds for SCS107 at ${scs107time}"
+   -m "Update nonload cmds for SCS107 at ${scs107time}"
 git push origin
+
+# Remove timelines heart attack
+rm /proj/sot/ska/data/timelines/task_sched_heart_attack
+
+# Delete the cmd_states clone
+rm -rf /pool1/scs107
+
 -----
 End Procedure
 
