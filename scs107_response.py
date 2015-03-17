@@ -76,6 +76,9 @@ git push origin
 # Remove timelines heart attack
 rm /proj/sot/ska/data/timelines/task_sched_heart_attack
 
+# Get out of the /pool1/scs107 directory
+cd
+
 # Delete the cmd_states clone
 rm -rf /pool1/scs107
 
