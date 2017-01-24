@@ -65,6 +65,16 @@ su aca
                               --observing-only \\
                               --archive-file nonload_cmds_archive.py
 
+# Add the cmds to the sqlite version of the table too, but don't archive again to
+# nonload_cmds_archive.py.  Set a bogus/not_used file instead for that operation.
+
+/proj/sot/ska/bin/python ./add_nonload_cmds.py --dbi sqlite \\
+                              --server /proj/sot/ska/data/cmd_states/cmd_states.db3 \\
+                              --date ${scs107time} \\
+                              --cmd-set scs107 --interrupt \\
+                              --observing-only \\
+                              --archive-file not_used.py
+
 # stop working as aca
 <CTRL>-d
 
