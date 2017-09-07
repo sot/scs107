@@ -36,6 +36,10 @@ touch /proj/sot/ska/data/timelines/task_sched_heart_attack
 cd /proj/sot/ska/data/sybase_backup
 ./dump_cmd_tables.sh
 
+# You can also make a backup of the cmd_states sqlite3 table in
+# /proj/sot/ska/data/cmd_states/cmd_states.db3
+# but this is backed-up via snapshot anyway
+
 # clone the cmd_states project from either github or clone in ~/git
 # (if cloning from ~/git, make sure you're working from an updated clone)
 mkdir /pool1/scs107
@@ -73,7 +77,7 @@ su aca
                               --date ${scs107time} \\
                               --cmd-set scs107 --interrupt \\
                               --observing-only \\
-                              --archive-file not_used.py
+                              --archive-file /tmp/not_used.py
 
 # stop working as aca
 <CTRL>-d
