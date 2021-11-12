@@ -32,11 +32,7 @@ ls -l /proj/sot/ska/data/timelines/task_sched_heart_attack
 # Stop timelines cron task
 touch /proj/sot/ska/data/timelines/task_sched_heart_attack
 
-# Backup the flight databases
-cd /proj/sot/ska/data/sybase_backup
-./dump_cmd_tables.sh
-
-# You can also make a backup of the cmd_states sqlite3 table in
+# You can make a backup of the cmd_states sqlite3 table in
 # /proj/sot/ska/data/cmd_states/cmd_states.db3
 # but this is backed-up via snapshot anyway
 
@@ -62,22 +58,12 @@ su aca
 # Run add_nonload_cmds.py.  If only observing loads should be interrupted,
 # use --observing-only flag as demonstrated below.
 
-/proj/sot/ska/bin/python ./add_nonload_cmds.py --dbi sybase --server sybase \\
-                              --user aca_ops --database aca \\
-                              --date ${scs107time} \\
-                              --cmd-set scs107 --interrupt \\
-                              --observing-only \\
-                              --archive-file nonload_cmds_archive.py
-
-# Add the cmds to the sqlite version of the table too, but don't archive again to
-# nonload_cmds_archive.py.  Set a bogus/not_used file instead for that operation.
-
 /proj/sot/ska/bin/python ./add_nonload_cmds.py --dbi sqlite \\
                               --server /proj/sot/ska/data/cmd_states/cmd_states.db3 \\
                               --date ${scs107time} \\
                               --cmd-set scs107 --interrupt \\
                               --observing-only \\
-                              --archive-file /tmp/not_used.py
+                              --archive-file nonload_cmds_archive.py
 
 # stop working as aca
 <CTRL>-d
